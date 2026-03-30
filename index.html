@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Krishimitr-Scan Crop</title>
+<title>Scan Crop - Krishimitr</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -12,57 +12,91 @@
 
 body {
   margin: 0;
-  font-family: "Poppins", Arial, sans-serif;
-  background: linear-gradient(135deg, #d4fc79, #96e6a1);
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(180deg,#f6e2cc,#e6f5ec);
   min-height: 100vh;
+}
+
+/* NAVBAR */
+.navbar {
+  height: 60px;
+  background: #2e7d32;
+  color: white;
   display: flex;
   align-items: center;
-  justify-content: center;
+  padding: 0 20px;
+  font-weight: 600;
+  font-size: 18px;
 }
 
+/* MAIN */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+/* CARD */
 .card {
   background: white;
-  width: 380px;
-  padding: 30px;
+  width: 420px;
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  padding: 30px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
   text-align: center;
-  animation: fadeIn 0.6s ease;
 }
 
-h2 {
-  margin: 0;
+/* TITLE */
+.title {
+  font-size: 22px;
   color: #2e7d32;
+  margin-bottom: 5px;
 }
 
-p {
-  color: #666;
+.subtitle {
   font-size: 14px;
+  color: #777;
+  margin-bottom: 20px;
 }
 
+/* UPLOAD BOX */
 .upload-box {
   border: 2px dashed #4caf50;
   border-radius: 15px;
-  padding: 25px;
-  margin-top: 20px;
+  padding: 30px;
   cursor: pointer;
   transition: 0.3s;
+  background: #fafefa;
 }
 
 .upload-box:hover {
   background: #f1fff3;
+  transform: scale(1.02);
+}
+
+.upload-box.dragover {
+  background: #e8f5e9;
+  border-color: #2e7d32;
 }
 
 .upload-box input {
   display: none;
 }
 
+.upload-text {
+  color: #4caf50;
+  font-weight: 500;
+}
+
+/* IMAGE PREVIEW */
 .preview img {
   width: 100%;
   margin-top: 15px;
   border-radius: 12px;
 }
 
+/* BUTTON */
 button {
   width: 100%;
   margin-top: 20px;
@@ -80,52 +114,90 @@ button:hover {
   background: #388e3c;
 }
 
+/* RESULT */
 .result {
   margin-top: 20px;
-  font-weight: bold;
+  font-weight: 600;
   color: #333;
 }
 
-@keyframes fadeIn {
-  from {opacity: 0; transform: translateY(10px);}
-  to {opacity: 1; transform: translateY(0);}
+/* LOADING */
+.loader {
+  margin-top: 15px;
+  display: none;
 }
 </style>
 </head>
 
 <body>
 
-<div class="card">
-  <h2>🌿 Scan Crop</h2>
-  <p>Upload a leaf image to detect disease</p>
+<div class="navbar">
+  🌿 Krishimitr
+</div>
 
-  <label class="upload-box">
-    📸 Click to upload image
-    <input type="file" id="imageInput" accept="image/*">
-  </label>
+<div class="container">
+  <div class="card">
 
-  <div class="preview" id="preview"></div>
+    <div class="title">Scan Your Crop</div>
+    <div class="subtitle">Upload leaf image to detect disease</div>
 
-  <button onclick="analyze()">Analyze</button>
+    <label class="upload-box" id="uploadBox">
+      <div class="upload-text">📸 Click or Drag Image Here</div>
+      <input type="file" id="imageInput" accept="image/*">
+    </label>
 
-  <div class="result" id="result"></div>
+    <div class="preview" id="preview"></div>
+
+    <button onclick="analyze()">Analyze Crop</button>
+
+    <div class="loader" id="loader">🔍 Analyzing...</div>
+    <div class="result" id="result"></div>
+
+  </div>
 </div>
 
 <script>
 let selectedFile;
 
-document.getElementById("imageInput").addEventListener("change", function(e) {
+const uploadBox = document.getElementById("uploadBox");
+const input = document.getElementById("imageInput");
+
+// Click upload
+uploadBox.addEventListener("click", () => input.click());
+
+// File select
+input.addEventListener("change", handleFile);
+
+// Drag events
+uploadBox.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  uploadBox.classList.add("dragover");
+});
+
+uploadBox.addEventListener("dragleave", () => {
+  uploadBox.classList.remove("dragover");
+});
+
+uploadBox.addEventListener("drop", (e) => {
+  e.preventDefault();
+  uploadBox.classList.remove("dragover");
+  selectedFile = e.dataTransfer.files[0];
+  showPreview(selectedFile);
+});
+
+function handleFile(e) {
   selectedFile = e.target.files[0];
+  showPreview(selectedFile);
+}
 
-  if (!selectedFile) return;
-
+function showPreview(file) {
   const img = document.createElement("img");
-  img.src = URL.createObjectURL(selectedFile);
+  img.src = URL.createObjectURL(file);
 
   const preview = document.getElementById("preview");
   preview.innerHTML = "";
   preview.appendChild(img);
-});
+}
 
 function analyze() {
   if (!selectedFile) {
@@ -133,8 +205,14 @@ function analyze() {
     return;
   }
 
-  // TEMP (replace with ML later)
-  document.getElementById("result").innerText = "🔍 Analyzing image...";
+  document.getElementById("loader").style.display = "block";
+  document.getElementById("result").innerText = "";
+
+  // Fake delay (replace with ML)
+  setTimeout(() => {
+    document.getElementById("loader").style.display = "none";
+    document.getElementById("result").innerText = "🌱 Result will appear here";
+  }, 1500);
 }
 </script>
 
