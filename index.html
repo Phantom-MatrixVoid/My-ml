@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Krishimitr-Scan Crop</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Poppins", Arial, sans-serif;
+  background: linear-gradient(135deg, #d4fc79, #96e6a1);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card {
+  background: white;
+  width: 380px;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  text-align: center;
+  animation: fadeIn 0.6s ease;
+}
+
+h2 {
+  margin: 0;
+  color: #2e7d32;
+}
+
+p {
+  color: #666;
+  font-size: 14px;
+}
+
+.upload-box {
+  border: 2px dashed #4caf50;
+  border-radius: 15px;
+  padding: 25px;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.upload-box:hover {
+  background: #f1fff3;
+}
+
+.upload-box input {
+  display: none;
+}
+
+.preview img {
+  width: 100%;
+  margin-top: 15px;
+  border-radius: 12px;
+}
+
+button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: #4caf50;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #388e3c;
+}
+
+.result {
+  margin-top: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(10px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2>🌿 Scan Crop</h2>
+  <p>Upload a leaf image to detect disease</p>
+
+  <label class="upload-box">
+    📸 Click to upload image
+    <input type="file" id="imageInput" accept="image/*">
+  </label>
+
+  <div class="preview" id="preview"></div>
+
+  <button onclick="analyze()">Analyze</button>
+
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+let selectedFile;
+
+document.getElementById("imageInput").addEventListener("change", function(e) {
+  selectedFile = e.target.files[0];
+
+  if (!selectedFile) return;
+
+  const img = document.createElement("img");
+  img.src = URL.createObjectURL(selectedFile);
+
+  const preview = document.getElementById("preview");
+  preview.innerHTML = "";
+  preview.appendChild(img);
+});
+
+function analyze() {
+  if (!selectedFile) {
+    alert("Please upload an image first");
+    return;
+  }
+
+  // TEMP (replace with ML later)
+  document.getElementById("result").innerText = "🔍 Analyzing image...";
+}
+</script>
+
+</body>
+</html>
