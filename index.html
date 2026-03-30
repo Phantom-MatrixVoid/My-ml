@@ -4,130 +4,128 @@
 <meta charset="UTF-8">
 <title>Disease Detection</title>
 
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+
 <style>
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
 }
 
-body {
-  font-family: "Poppins", sans-serif;
-  min-height: 100vh;
-  background: linear-gradient(180deg,#f6e2cc 0%,#f7f9f8 50%,#dceee3 100%);
+body{
+font-family:"Poppins",sans-serif;
+min-height:100vh;
+background:linear-gradient(180deg,#f6e2cc 0%,#f7f9f8 50%,#dceee3 100%);
 }
 
 /* NAVBAR */
-.top-nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 70px;
-  background: linear-gradient(90deg,#ff9933,#ffffff,#138808);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 18px;
-  z-index: 1000;
+.top-nav{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:70px;
+background:linear-gradient(90deg,#ff9933,#ffffff,#138808);
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 18px;
+z-index:1000;
 }
 
-.menu-btn {
-  font-size: 24px;
-  background: none;
-  border: none;
-  cursor: pointer;
+.menu-btn{
+font-size:24px;
+background:none;
+border:none;
+cursor:pointer;
 }
 
 /* SIDEBAR */
-.sidebar {
-  position: fixed;
-  top: 70px;
-  left: -260px;
-  width: 250px;
-  height: calc(100vh - 70px);
-  background: #0a3d62;
-  color: white;
-  padding: 20px;
-  transition: 0.3s;
+.sidebar{
+position:fixed;
+top:70px;
+left:-260px;
+width:250px;
+height:calc(100vh - 70px);
+background:#0a3d62;
+color:white;
+padding:20px;
+transition:0.3s;
 }
 
-.sidebar.active {
-  left: 0;
+.sidebar.active{
+left:0;
 }
 
-.sidebar a {
-  display: block;
-  padding: 12px;
-  margin-bottom: 10px;
-  color: white;
-  text-decoration: none;
-  border-radius: 8px;
+.sidebar a{
+display:block;
+padding:12px;
+margin-bottom:10px;
+color:white;
+text-decoration:none;
+border-radius:8px;
 }
 
 /* MAIN */
-.main {
-  margin-top: 70px;
-  padding: 20px;
-  display: grid;
-  place-items: center;
-  min-height: calc(100vh - 70px);
+.main{
+margin-top:70px;
+padding:20px;
+display:grid;
+place-items:center;
+min-height:calc(100vh - 70px);
 }
 
 /* CARD */
-.card {
-  width: 100%;
-  max-width: 480px;
-  background: white;
-  border-radius: 18px;
-  padding: 25px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-  text-align: center;
+.card{
+width:100%;
+max-width:480px;
+background:white;
+border-radius:18px;
+padding:25px;
+box-shadow:0 12px 30px rgba(0,0,0,0.15);
+text-align:center;
 }
 
 /* UPLOAD BOX */
-.upload-box {
-  border: 2px dashed #138808;
-  border-radius: 14px;
-  height: 200px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-top: 20px;
-  cursor: pointer;
-  background: #fafafa;
-  overflow: hidden;
-  font-size: 15px;
+.upload-box{
+border:2px dashed #138808;
+border-radius:14px;
+height:200px;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+margin-top:20px;
+cursor:pointer;
+background:#fafafa;
+overflow:hidden;
+font-size:15px;
 }
 
-.upload-box img {
-  max-height: 100%;
-  max-width: 100%;
-  object-fit: contain;
+.upload-box img{
+max-height:100%;
+max-width:100%;
+object-fit:contain;
 }
 
-/* BUTTONS */
-.btn-group {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
+/* BUTTON */
+button{
+width:100%;
+padding:12px;
+border:none;
+border-radius:10px;
+margin-top:10px;
+background:linear-gradient(90deg,#ff9933,#138808);
+color:white;
+font-weight:bold;
+cursor:pointer;
 }
 
-button {
-  flex: 1;
-  padding: 12px;
-  border: none;
-  border-radius: 10px;
-  background: linear-gradient(90deg,#ff9933,#138808);
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-#result {
-  margin-top: 15px;
-  font-weight: bold;
+#result{
+margin-top:15px;
+font-weight:bold;
+font-size:18px;
 }
 </style>
 </head>
@@ -135,106 +133,141 @@ button {
 <body>
 
 <div class="top-nav">
-  <button class="menu-btn" onclick="toggleMenu()">☰</button>
+<button class="menu-btn" onclick="toggleMenu()">☰</button>
 </div>
 
 <div class="sidebar" id="sidebar">
-  <a href="#">Dashboard</a>
-  <a href="#">Crop Advisor</a>
-  <a href="#">Sell Crops</a>
+<a href="#">Dashboard</a>
+<a href="#">Crop Advisor</a>
+<a href="#">Sell Crops</a>
 </div>
 
 <div class="main">
-  <div class="card">
-    <h2>Plant Disease Detection</h2>
-    <p>Upload or capture a leaf image</p>
+<div class="card">
 
-    <div class="upload-box" id="uploadBox">
-      <input type="file" id="imageInput" hidden accept="image/*">
-      <div id="uploadText">Click to upload image</div>
-      <img id="preview" hidden>
-    </div>
+<h2>Plant Disease Detection</h2>
+<p>Upload or capture a leaf image</p>
 
+<div class="upload-box" id="uploadBox">
+<input type="file" id="imageInput" hidden accept="image/*">
+<div id="uploadText">Click to upload image</div>
+<img id="preview" hidden>
+</div>
 
-    <button onclick="analyze()">Analyze</button>
+<button onclick="analyze()">Analyze</button>
 
-    <div id="result"></div>
-  </div>
+<div id="result"></div>
+
+</div>
 </div>
 
 <script>
-const sidebar = document.getElementById("sidebar");
 
-function toggleMenu() {
-  sidebar.classList.toggle("active");
+/* SIDEBAR */
+const sidebar=document.getElementById("sidebar")
+
+function toggleMenu(){
+sidebar.classList.toggle("active")
 }
+
+/* MODEL */
+let model
+
+async function loadModel(){
+model=await tf.loadLayersModel("model/model.json")
+console.log("Model Loaded")
+}
+
+loadModel()
 
 /* ELEMENTS */
-const input = document.getElementById("imageInput");
-const preview = document.getElementById("preview");
-const text = document.getElementById("uploadText");
-const box = document.getElementById("uploadBox");
+const input=document.getElementById("imageInput")
+const preview=document.getElementById("preview")
+const text=document.getElementById("uploadText")
+const box=document.getElementById("uploadBox")
 
-/* CLICK BOX */
-box.addEventListener("click", () => input.click());
+box.addEventListener("click",()=>input.click())
 
+/* IMAGE PREVIEW */
+input.onchange=()=>{
 
+const file=input.files[0]
+if(!file)return
 
-/* FAST UPLOAD */
-input.onchange = () => {
-  const file = input.files[0];
-  if (!file) return;
+text.innerText="Loading..."
 
-  text.innerText = "Loading...";
+const img=new Image()
+const reader=new FileReader()
 
-  const img = new Image();
-  const reader = new FileReader();
+reader.onload=e=>img.src=e.target.result
 
-  reader.onload = (e) => img.src = e.target.result;
+img.onload=()=>{
 
-  img.onload = () => {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
+const canvas=document.createElement("canvas")
+const ctx=canvas.getContext("2d")
 
-    let w = img.width;
-    let h = img.height;
-    const max = 600;
+let w=img.width
+let h=img.height
+const max=600
 
-    if (w > h && w > max) {
-      h *= max / w;
-      w = max;
-    } else if (h > max) {
-      w *= max / h;
-      h = max;
-    }
-
-    canvas.width = w;
-    canvas.height = h;
-
-    ctx.drawImage(img, 0, 0, w, h);
-
-    preview.src = canvas.toDataURL("image/jpeg", 0.7);
-    preview.hidden = false;
-    text.style.display = "none";
-  };
-
-  reader.readAsDataURL(file);
-};
-
-/* ANALYZE */
-function analyze() {
-  if (!input.files[0]) {
-    alert("Upload image first");
-    return;
-  }
-
-  const result = document.getElementById("result");
-  result.innerText = "Analyzing...";
-
-  setTimeout(() => {
-    result.innerText = "Nice picture";
-  }, 1200);
+if(w>h && w>max){
+h*=max/w
+w=max
+}else if(h>max){
+w*=max/h
+h=max
 }
+
+canvas.width=w
+canvas.height=h
+
+ctx.drawImage(img,0,0,w,h)
+
+preview.src=canvas.toDataURL("image/jpeg",0.7)
+preview.hidden=false
+text.style.display="none"
+
+}
+
+reader.readAsDataURL(file)
+
+}
+
+/* ANALYZE IMAGE */
+async function analyze(){
+
+if(!preview.src){
+alert("Upload image first")
+return
+}
+
+const result=document.getElementById("result")
+result.innerText="Analyzing..."
+
+const img=document.getElementById("preview")
+
+const tensor=tf.browser.fromPixels(img)
+.resizeNearestNeighbor([224,224])
+.toFloat()
+.div(255.0)
+.expandDims()
+
+const prediction=await model.predict(tensor).data()
+
+const classes=[
+"Disease 1",
+"Disease 2",
+"Disease 3",
+"Healthy"
+]
+
+const index=prediction.indexOf(Math.max(...prediction))
+const confidence=(prediction[index]*100).toFixed(2)
+
+result.innerText=classes[index]+" ("+confidence+"%)"
+
+}
+
 </script>
 
 </body>
