@@ -155,10 +155,6 @@ button {
       <img id="preview" hidden>
     </div>
 
-    <div class="btn-group">
-      <button onclick="openGallery()">Gallery</button>
-      <button onclick="openCamera()">Camera</button>
-    </div>
 
     <button onclick="analyze()">Analyze</button>
 
@@ -182,17 +178,7 @@ const box = document.getElementById("uploadBox");
 /* CLICK BOX */
 box.addEventListener("click", () => input.click());
 
-/* GALLERY */
-function openGallery() {
-  input.removeAttribute("capture");
-  input.click();
-}
 
-/* CAMERA */
-function openCamera() {
-  input.setAttribute("capture", "environment");
-  input.click();
-}
 
 /* FAST UPLOAD */
 input.onchange = () => {
