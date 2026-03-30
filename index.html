@@ -174,7 +174,7 @@ sidebar.classList.toggle("active")
 let model
 
 async function loadModel(){
-model=await tf.loadLayersModel("model/model.json")
+model = await tf.loadLayersModel("./model/model.json");
 console.log("Model Loaded")
 }
 
@@ -235,6 +235,11 @@ reader.readAsDataURL(file)
 
 /* ANALYZE IMAGE */
 async function analyze(){
+
+if(!model){
+alert("Model still loading...");
+return;
+}
 
 if(!preview.src){
 alert("Upload image first")
