@@ -5,10 +5,15 @@
 <title>KrishiMitr - Disease Detection</title>
 
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 body {
   font-family: "Poppins", sans-serif;
+  min-height: 100vh;
   background: linear-gradient(180deg,#f6e2cc 0%,#f7f9f8 50%,#dceee3 100%);
 }
 
@@ -21,22 +26,23 @@ body {
   height: 70px;
   background: linear-gradient(90deg,#ff9933,#ffffff,#138808);
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
+  justify-content: space-between;
+  padding: 0 18px;
   z-index: 1000;
 }
 
 .brand {
   font-weight: 800;
+  font-size: 18px;
   color: #0a3d62;
 }
 
 .menu-btn {
-  font-size: 22px;
-  cursor: pointer;
+  font-size: 24px;
   background: none;
   border: none;
+  cursor: pointer;
 }
 
 /* SIDEBAR */
@@ -45,11 +51,11 @@ body {
   top: 70px;
   left: -260px;
   width: 250px;
-  height: calc(100% - 70px);
+  height: calc(100vh - 70px);
   background: #0a3d62;
   color: white;
   padding: 20px;
-  transition: 0.3s;
+  transition: 0.3s ease;
   z-index: 999;
 }
 
@@ -60,17 +66,17 @@ body {
 .sidebar a {
   display: block;
   padding: 12px;
+  margin-bottom: 10px;
   color: white;
   text-decoration: none;
   border-radius: 8px;
-  margin-bottom: 10px;
 }
 
 .sidebar a:hover {
   background: #1e3a8a;
 }
 
-/* OVERLAY (mobile) */
+/* OVERLAY */
 .overlay {
   position: fixed;
   inset: 0;
@@ -85,14 +91,18 @@ body {
 
 /* MAIN */
 .main {
-  margin-top: 90px;
-  padding: 20px;
+  margin-top: 70px;
+  padding: 30px 15px;
+  min-height: calc(100vh - 70px);
+
   display: flex;
+  align-items: center;
   justify-content: center;
+
   transition: margin-left 0.3s ease;
 }
 
-/* SHIFT ONLY ON DESKTOP */
+/* DESKTOP SHIFT */
 @media(min-width: 768px) {
   .main.shift {
     margin-left: 250px;
@@ -102,23 +112,35 @@ body {
 /* CARD */
 .card {
   width: 100%;
-  max-width: 500px;
+  max-width: 480px;
   background: white;
-  border-radius: 20px;
+  border-radius: 18px;
   padding: 25px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
   text-align: center;
+}
+
+/* TITLE */
+.card h2 {
+  margin-bottom: 8px;
+  color: #0a3d62;
+}
+
+.card p {
+  color: #555;
+  font-size: 14px;
 }
 
 /* UPLOAD BOX */
 .upload-box {
   border: 2px dashed #138808;
-  border-radius: 15px;
-  padding: 25px;
-  margin-top: 15px;
+  border-radius: 14px;
+  padding: 20px;
+  margin-top: 20px;
   cursor: pointer;
   width: 100%;
-  transition: 0.3s;
+  transition: 0.25s;
+  background: #fafafa;
 }
 
 .upload-box:hover {
@@ -127,12 +149,13 @@ body {
 
 .upload-box img {
   width: 100%;
+  margin-top: 10px;
   border-radius: 10px;
 }
 
 /* BUTTON */
 button {
-  margin-top: 15px;
+  margin-top: 18px;
   padding: 12px;
   width: 100%;
   border: none;
@@ -140,6 +163,7 @@ button {
   background: linear-gradient(90deg,#ff9933,#138808);
   color: white;
   font-weight: bold;
+  font-size: 15px;
   cursor: pointer;
 }
 
