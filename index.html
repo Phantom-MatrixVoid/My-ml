@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title> Disease Detection</title>
+<title>Disease Detection</title>
 
 <style>
 * {
@@ -32,12 +32,6 @@ body {
   z-index: 1000;
 }
 
-.brand {
-  font-weight: 800;
-  font-size: 18px;
-  color: #0a3d62;
-}
-
 .menu-btn {
   font-size: 24px;
   background: none;
@@ -55,8 +49,7 @@ body {
   background: #0a3d62;
   color: white;
   padding: 20px;
-  transition: 0.3s ease;
-  z-index: 999;
+  transition: 0.3s;
 }
 
 .sidebar.active {
@@ -72,39 +65,13 @@ body {
   border-radius: 8px;
 }
 
-.sidebar a:hover {
-  background: #1e3a8a;
-}
-
-/* OVERLAY */
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.3);
-  display: none;
-  z-index: 998;
-}
-
-.overlay.show {
-  display: block;
-}
-
 /* MAIN */
 .main {
   margin-top: 70px;
   padding: 20px;
-
   display: grid;
-  place-items: center; /* BEST CENTERING */
-
+  place-items: center;
   min-height: calc(100vh - 70px);
-}
-
-/* DESKTOP SHIFT */
-@media(min-width: 768px) {
-  .main.shift {
-    margin-left: 250px;
-  }
 }
 
 /* CARD */
@@ -118,106 +85,80 @@ body {
   text-align: center;
 }
 
-/* TITLE */
-.card h2 {
-  margin-bottom: 8px;
-  color: #0a3d62;
-}
-
-.card p {
-  color: #555;
-  font-size: 14px;
-}
-
 /* UPLOAD BOX */
 .upload-box {
   border: 2px dashed #138808;
   border-radius: 14px;
-
-  height: 200px;              /* 🔥 FIX: force big size */
-  display: flex;              /* center content */
+  height: 200px;
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
   margin-top: 20px;
   cursor: pointer;
-  width: 100%;
-  transition: 0.25s;
   background: #fafafa;
-  overflow: hidden;          /* prevents cutting */
-font-size: 15px;
-color: #444;
-}
-
-.upload-box:hover {
-  background: #f0fff4;
+  overflow: hidden;
+  font-size: 15px;
 }
 
 .upload-box img {
   max-height: 100%;
   max-width: 100%;
-  object-fit: contain;  /* prevents image cutting */
-  border-radius: 10px;
+  object-fit: contain;
 }
 
-/* BUTTON */
+/* BUTTONS */
+.btn-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
 button {
-  margin-top: 18px;
+  flex: 1;
   padding: 12px;
-  width: 100%;
   border: none;
   border-radius: 10px;
   background: linear-gradient(90deg,#ff9933,#138808);
   color: white;
   font-weight: bold;
-  font-size: 15px;
   cursor: pointer;
 }
 
-button:hover {
-  opacity: 0.9;
-}
-
-/* RESULT */
 #result {
   margin-top: 15px;
   font-weight: bold;
-  color: #0a3d62;
 }
 </style>
 </head>
 
 <body>
 
-<!-- NAVBAR -->
 <div class="top-nav">
   <button class="menu-btn" onclick="toggleMenu()">☰</button>
-  <div class="brand"></div>
 </div>
 
-<!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
   <a href="#">Dashboard</a>
   <a href="#">Crop Advisor</a>
   <a href="#">Sell Crops</a>
-  <a href="#">Settings</a>
 </div>
 
-<!-- OVERLAY -->
-<div class="overlay" id="overlay" onclick="closeMenu()"></div>
-
-<!-- MAIN -->
-<div class="main" id="main">
+<div class="main">
   <div class="card">
     <h2>Plant Disease Detection</h2>
-    <p>Upload a leaf image</p>
+    <p>Upload or capture a leaf image</p>
 
-    <label class="upload-box">
+    <div class="upload-box" id="uploadBox">
       <input type="file" id="imageInput" hidden accept="image/*">
       <div id="uploadText">Click to upload image</div>
       <img id="preview" hidden>
-    </label>
+    </div>
+
+    <div class="btn-group">
+      <button onclick="openGallery()">Gallery</button>
+      <button onclick="openCamera()">Camera</button>
+    </div>
 
     <button onclick="analyze()">Analyze</button>
 
@@ -227,107 +168,88 @@ button:hover {
 
 <script>
 const sidebar = document.getElementById("sidebar");
-const overlay = document.getElementById("overlay");
-const main = document.getElementById("main");
 
 function toggleMenu() {
   sidebar.classList.toggle("active");
-
-  if (window.innerWidth >= 768) {
-    main.classList.toggle("shift");
-  } else {
-    overlay.classList.toggle("show");
-  }
 }
 
-function closeMenu() {
-  sidebar.classList.remove("active");
-  overlay.classList.remove("show");
-  main.classList.remove("shift");
-}
-
-/* ===== FAST UPLOAD + CAMERA ===== */
-
+/* ELEMENTS */
 const input = document.getElementById("imageInput");
 const preview = document.getElementById("preview");
 const text = document.getElementById("uploadText");
-const box = document.querySelector(".upload-box");
+const box = document.getElementById("uploadBox");
 
-/* 📸 Allow camera on mobile */
-input.setAttribute("capture", "environment");
+/* CLICK BOX */
+box.addEventListener("click", () => input.click());
 
-/* Click box */
-box.onclick = () => input.click();
+/* GALLERY */
+function openGallery() {
+  input.removeAttribute("capture");
+  input.click();
+}
 
-/* 🚀 Fast preview + compression */
+/* CAMERA */
+function openCamera() {
+  input.setAttribute("capture", "environment");
+  input.click();
+}
+
+/* FAST UPLOAD */
 input.onchange = () => {
   const file = input.files[0];
   if (!file) return;
 
-  text.innerText = "Loading image...";
+  text.innerText = "Loading...";
 
+  const img = new Image();
   const reader = new FileReader();
 
-  reader.onload = function(e) {
-    const img = new Image();
+  reader.onload = (e) => img.src = e.target.result;
 
-    img.onload = function() {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
+  img.onload = () => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
 
-      /* 🔥 Resize image (MAX 600px) */
-      let width = img.width;
-      let height = img.height;
+    let w = img.width;
+    let h = img.height;
+    const max = 600;
 
-      const maxSize = 600;
+    if (w > h && w > max) {
+      h *= max / w;
+      w = max;
+    } else if (h > max) {
+      w *= max / h;
+      h = max;
+    }
 
-      if (width > height && width > maxSize) {
-        height *= maxSize / width;
-        width = maxSize;
-      } else if (height > maxSize) {
-        width *= maxSize / height;
-        height = maxSize;
-      }
+    canvas.width = w;
+    canvas.height = h;
 
-      canvas.width = width;
-      canvas.height = height;
+    ctx.drawImage(img, 0, 0, w, h);
 
-      ctx.drawImage(img, 0, 0, width, height);
-
-      /* ⚡ Compress image */
-      const compressed = canvas.toDataURL("image/jpeg", 0.7);
-
-      preview.src = compressed;
-      preview.hidden = false;
-      text.style.display = "none";
-    };
-
-    img.src = e.target.result;
+    preview.src = canvas.toDataURL("image/jpeg", 0.7);
+    preview.hidden = false;
+    text.style.display = "none";
   };
 
   reader.readAsDataURL(file);
 };
 
-/* 🧠 Analyze */
+/* ANALYZE */
 function analyze() {
-  const file = input.files[0];
-
-  if (!file) {
-    alert("Please upload image first");
+  if (!input.files[0]) {
+    alert("Upload image first");
     return;
   }
 
   const result = document.getElementById("result");
-
   result.innerText = "Analyzing...";
-  
-  /* fake delay (replace with ML API later) */
+
   setTimeout(() => {
-    result.innerText = "Nice picture ";
+    result.innerText = "Nice picture";
   }, 1200);
 }
 </script>
-
 
 </body>
 </html>
