@@ -2,217 +2,199 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Scan Crop - Krishimitr</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KrishiMitr - Disease Detection</title>
 
 <style>
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  margin: 0;
   font-family: "Poppins", sans-serif;
-  background: linear-gradient(180deg,#f6e2cc,#e6f5ec);
-  min-height: 100vh;
+  background: linear-gradient(180deg,#f6e2cc 0%,#f7f9f8 50%,#dceee3 100%);
 }
 
 /* NAVBAR */
-.navbar {
-  height: 60px;
-  background: #2e7d32;
-  color: white;
+.top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+  background: linear-gradient(90deg,#ff9933,#ffffff,#138808);
   display: flex;
+  justify-content: space-between;
   align-items: center;
   padding: 0 20px;
-  font-weight: 600;
-  font-size: 18px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  z-index: 1000;
+}
+
+.brand {
+  font-weight: 800;
+  color: #0a3d62;
+  font-size: 1.2rem;
+}
+
+.menu-btn {
+  font-size: 22px;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+/* SIDEBAR */
+.sidebar {
+  position: fixed;
+  top: 70px;
+  left: -260px;
+  width: 250px;
+  height: calc(100% - 70px);
+  background: #0a3d62;
+  color: white;
+  transition: 0.3s;
+  padding: 20px;
+}
+
+.sidebar.active { left: 0; }
+
+.sidebar a {
+  display: block;
+  padding: 12px;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.sidebar a:hover {
+  background: #1e3a8a;
 }
 
 /* MAIN */
-.container {
+.main {
+  margin-top: 90px;
+  padding: 20px;
   display: flex;
   justify-content: center;
-  align-items: center;
-  padding: 40px 20px;
 }
 
 /* CARD */
 .card {
+  width: 100%;
+  max-width: 450px;
   background: white;
-  width: 420px;
   border-radius: 20px;
-  padding: 30px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
   text-align: center;
-}
-
-/* TITLE */
-.title {
-  font-size: 22px;
-  color: #2e7d32;
-  margin-bottom: 5px;
-}
-
-.subtitle {
-  font-size: 14px;
-  color: #777;
-  margin-bottom: 20px;
 }
 
 /* UPLOAD BOX */
 .upload-box {
-  border: 2px dashed #4caf50;
+  border: 2px dashed #138808;
   border-radius: 15px;
   padding: 30px;
+  margin-top: 15px;
   cursor: pointer;
-  transition: 0.3s;
-  background: #fafefa;
 }
 
 .upload-box:hover {
-  background: #f1fff3;
-  transform: scale(1.02);
+  background: #f0fff4;
 }
 
-.upload-box.dragover {
-  background: #e8f5e9;
-  border-color: #2e7d32;
-}
-
-.upload-box input {
-  display: none;
-}
-
-.upload-text {
-  color: #4caf50;
-  font-weight: 500;
-}
-
-/* IMAGE PREVIEW */
-.preview img {
+.upload-box img {
   width: 100%;
-  margin-top: 15px;
-  border-radius: 12px;
+  border-radius: 10px;
 }
 
 /* BUTTON */
 button {
-  width: 100%;
-  margin-top: 20px;
+  margin-top: 15px;
   padding: 12px;
+  width: 100%;
   border: none;
   border-radius: 10px;
-  background: #4caf50;
+  background: linear-gradient(90deg,#ff9933,#138808);
   color: white;
-  font-size: 16px;
+  font-weight: bold;
   cursor: pointer;
-  transition: 0.3s;
 }
 
 button:hover {
-  background: #388e3c;
+  opacity: 0.9;
 }
 
 /* RESULT */
-.result {
-  margin-top: 20px;
-  font-weight: 600;
-  color: #333;
-}
-
-/* LOADING */
-.loader {
+#result {
   margin-top: 15px;
-  display: none;
+  font-weight: bold;
+  color: #0a3d62;
 }
 </style>
 </head>
 
 <body>
 
-<div class="navbar">
-  🌿 Krishimitr
+<!-- NAVBAR -->
+<div class="top-nav">
+  <button class="menu-btn" onclick="toggleMenu()">☰</button>
+  <div class="brand">🌿 KrishiMitr</div>
 </div>
 
-<div class="container">
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <a href="#">Dashboard</a>
+  <a href="#">Crop Advisor</a>
+  <a href="#">Sell Crops</a>
+  <a href="#">Settings</a>
+</div>
+
+<!-- MAIN -->
+<div class="main">
   <div class="card">
+    <h2>Plant Disease Detection</h2>
+    <p>Upload a leaf image</p>
 
-    <div class="title">Scan Your Crop</div>
-    <div class="subtitle">Upload leaf image to detect disease</div>
-
-    <label class="upload-box" id="uploadBox">
-      <div class="upload-text">📸 Click or Drag Image Here</div>
-      <input type="file" id="imageInput" accept="image/*">
+    <label class="upload-box">
+      <input type="file" id="imageInput" hidden accept="image/*">
+      <div id="uploadText">Click to upload</div>
+      <img id="preview" hidden>
     </label>
 
-    <div class="preview" id="preview"></div>
+    <button onclick="analyze()">Analyze</button>
 
-    <button onclick="analyze()">Analyze Crop</button>
-
-    <div class="loader" id="loader">🔍 Analyzing...</div>
-    <div class="result" id="result"></div>
-
+    <div id="result"></div>
   </div>
 </div>
 
 <script>
-let selectedFile;
+function toggleMenu() {
+  document.getElementById("sidebar").classList.toggle("active");
+}
 
-const uploadBox = document.getElementById("uploadBox");
 const input = document.getElementById("imageInput");
+const preview = document.getElementById("preview");
+const text = document.getElementById("uploadText");
 
-// Click upload
-uploadBox.addEventListener("click", () => input.click());
+document.querySelector(".upload-box").onclick = () => input.click();
 
-// File select
-input.addEventListener("change", handleFile);
-
-// Drag events
-uploadBox.addEventListener("dragover", (e) => {
-  e.preventDefault();
-  uploadBox.classList.add("dragover");
-});
-
-uploadBox.addEventListener("dragleave", () => {
-  uploadBox.classList.remove("dragover");
-});
-
-uploadBox.addEventListener("drop", (e) => {
-  e.preventDefault();
-  uploadBox.classList.remove("dragover");
-  selectedFile = e.dataTransfer.files[0];
-  showPreview(selectedFile);
-});
-
-function handleFile(e) {
-  selectedFile = e.target.files[0];
-  showPreview(selectedFile);
-}
-
-function showPreview(file) {
-  const img = document.createElement("img");
-  img.src = URL.createObjectURL(file);
-
-  const preview = document.getElementById("preview");
-  preview.innerHTML = "";
-  preview.appendChild(img);
-}
+input.onchange = () => {
+  const file = input.files[0];
+  if (file) {
+    preview.src = URL.createObjectURL(file);
+    preview.hidden = false;
+    text.style.display = "none";
+  }
+};
 
 function analyze() {
-  if (!selectedFile) {
-    alert("Please upload an image first");
+  const file = input.files[0];
+
+  if (!file) {
+    alert("Upload image first");
     return;
   }
 
-  document.getElementById("loader").style.display = "block";
-  document.getElementById("result").innerText = "";
-
-  // Fake delay (replace with ML)
-  setTimeout(() => {
-    document.getElementById("loader").style.display = "none";
-    document.getElementById("result").innerText = "🌱 Result will appear here";
-  }, 1500);
+  document.getElementById("result").innerText = "Analyzing...";
 }
 </script>
 
