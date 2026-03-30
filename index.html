@@ -133,12 +133,21 @@ body {
 .upload-box {
   border: 2px dashed #138808;
   border-radius: 14px;
-  padding: 20px;
+
+  height: 200px;              /* 🔥 FIX: force big size */
+  display: flex;              /* center content */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
   margin-top: 20px;
   cursor: pointer;
   width: 100%;
   transition: 0.25s;
   background: #fafafa;
+  overflow: hidden;          /* prevents cutting */
+font-size: 15px;
+color: #444;
 }
 
 .upload-box:hover {
@@ -146,8 +155,9 @@ body {
 }
 
 .upload-box img {
-  width: 100%;
-  margin-top: 10px;
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;  /* prevents image cutting */
   border-radius: 10px;
 }
 
