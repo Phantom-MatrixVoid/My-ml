@@ -246,22 +246,69 @@ function closeMenu() {
   main.classList.remove("shift");
 }
 
-/* Upload Logic */
+/* ===== FAST UPLOAD + CAMERA ===== */
+
 const input = document.getElementById("imageInput");
 const preview = document.getElementById("preview");
 const text = document.getElementById("uploadText");
+const box = document.querySelector(".upload-box");
 
-document.querySelector(".upload-box").onclick = () => input.click();
+/* 📸 Allow camera on mobile */
+input.setAttribute("capture", "environment");
 
+/* Click box */
+box.onclick = () => input.click();
+
+/* 🚀 Fast preview + compression */
 input.onchange = () => {
   const file = input.files[0];
-  if (file) {
-    preview.src = URL.createObjectURL(file);
-    preview.hidden = false;
-    text.style.display = "none";
-  }
+  if (!file) return;
+
+  text.innerText = "Loading image...";
+
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    const img = new Image();
+
+    img.onload = function() {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      /* 🔥 Resize image (MAX 600px) */
+      let width = img.width;
+      let height = img.height;
+
+      const maxSize = 600;
+
+      if (width > height && width > maxSize) {
+        height *= maxSize / width;
+        width = maxSize;
+      } else if (height > maxSize) {
+        width *= maxSize / height;
+        height = maxSize;
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+
+      ctx.drawImage(img, 0, 0, width, height);
+
+      /* ⚡ Compress image */
+      const compressed = canvas.toDataURL("image/jpeg", 0.7);
+
+      preview.src = compressed;
+      preview.hidden = false;
+      text.style.display = "none";
+    };
+
+    img.src = e.target.result;
+  };
+
+  reader.readAsDataURL(file);
 };
 
+/* 🧠 Analyze */
 function analyze() {
   const file = input.files[0];
 
@@ -270,8 +317,16 @@ function analyze() {
     return;
   }
 
-  document.getElementById("result").innerText = "Analyzing image...";
+  const result = document.getElementById("result");
+
+  result.innerText = "Analyzing...";
+  
+  /* fake delay (replace with ML API later) */
+  setTimeout(() => {
+    result.innerText = "Nice picture ";
+  }, 1200);
 }
+</script>
 </script>
 
 </body>
