@@ -24,14 +24,12 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 0 20px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
   z-index: 1000;
 }
 
 .brand {
   font-weight: 800;
   color: #0a3d62;
-  font-size: 1.2rem;
 }
 
 .menu-btn {
@@ -50,11 +48,14 @@ body {
   height: calc(100% - 70px);
   background: #0a3d62;
   color: white;
-  transition: 0.3s;
   padding: 20px;
+  transition: 0.3s;
+  z-index: 999;
 }
 
-.sidebar.active { left: 0; }
+.sidebar.active {
+  left: 0;
+}
 
 .sidebar a {
   display: block;
@@ -69,18 +70,39 @@ body {
   background: #1e3a8a;
 }
 
+/* OVERLAY (mobile) */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  display: none;
+  z-index: 998;
+}
+
+.overlay.show {
+  display: block;
+}
+
 /* MAIN */
 .main {
   margin-top: 90px;
   padding: 20px;
   display: flex;
   justify-content: center;
+  transition: margin-left 0.3s ease;
+}
+
+/* SHIFT ONLY ON DESKTOP */
+@media(min-width: 768px) {
+  .main.shift {
+    margin-left: 250px;
+  }
 }
 
 /* CARD */
 .card {
   width: 100%;
-  max-width: 450px;
+  max-width: 500px;
   background: white;
   border-radius: 20px;
   padding: 25px;
@@ -92,9 +114,11 @@ body {
 .upload-box {
   border: 2px dashed #138808;
   border-radius: 15px;
-  padding: 30px;
+  padding: 25px;
   margin-top: 15px;
   cursor: pointer;
+  width: 100%;
+  transition: 0.3s;
 }
 
 .upload-box:hover {
@@ -148,15 +172,18 @@ button:hover {
   <a href="#">Settings</a>
 </div>
 
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" onclick="closeMenu()"></div>
+
 <!-- MAIN -->
-<div class="main">
+<div class="main" id="main">
   <div class="card">
     <h2>Plant Disease Detection</h2>
     <p>Upload a leaf image</p>
 
     <label class="upload-box">
       <input type="file" id="imageInput" hidden accept="image/*">
-      <div id="uploadText">Click to upload</div>
+      <div id="uploadText">📁 Click to upload image</div>
       <img id="preview" hidden>
     </label>
 
@@ -167,10 +194,27 @@ button:hover {
 </div>
 
 <script>
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+const main = document.getElementById("main");
+
 function toggleMenu() {
-  document.getElementById("sidebar").classList.toggle("active");
+  sidebar.classList.toggle("active");
+
+  if (window.innerWidth >= 768) {
+    main.classList.toggle("shift");
+  } else {
+    overlay.classList.toggle("show");
+  }
 }
 
+function closeMenu() {
+  sidebar.classList.remove("active");
+  overlay.classList.remove("show");
+  main.classList.remove("shift");
+}
+
+/* Upload Logic */
 const input = document.getElementById("imageInput");
 const preview = document.getElementById("preview");
 const text = document.getElementById("uploadText");
@@ -190,11 +234,11 @@ function analyze() {
   const file = input.files[0];
 
   if (!file) {
-    alert("Upload image first");
+    alert("Please upload image first");
     return;
   }
 
-  document.getElementById("result").innerText = "Analyzing...";
+  document.getElementById("result").innerText = "Analyzing image...";
 }
 </script>
 
